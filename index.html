@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NexaBank</title>
+      <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style>
+    * { font-family: 'Syne', sans-serif; }
+    .mono { font-family: 'Space Mono', monospace; }
+    body { background: #0a0a0f; color: #e8e8f0; }
+
+    .glass {
+      background: rgba(255,255,255,0.04);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .accent { color: #00f5c4; }
+    .btn-primary {
+      background: linear-gradient(135deg, #00f5c4, #0080ff);
+      color: #0a0a0f;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(0,245,196,0.3); }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ff4757, #c0392b);
+      color: white;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+    .btn-danger:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(255,71,87,0.3); }
+
+    .btn-success {
+      background: linear-gradient(135deg, #2ecc71, #00b894);
+      color: #0a0a0f;
+      font-weight: 700;
+      transition: all 0.3s ease;
+    }
+    .btn-success:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(46,204,113,0.3); }
+
+    input {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #e8e8f0;
+      transition: border-color 0.3s;
+    }
+    input:focus { outline: none; border-color: #00f5c4; box-shadow: 0 0 0 3px rgba(0,245,196,0.1); }
+    input::placeholder { color: rgba(255,255,255,0.3); }
+
+    .card-fade { animation: fadeUp 0.4s ease forwards; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tab-active {
+      background: linear-gradient(135deg, #00f5c4, #0080ff);
+      color: #0a0a0f;
+    }
+
+    .balance-card {
+      background: linear-gradient(135deg, #0a0a1f 0%, #001a3d 50%, #0a0a1f 100%);
+      border: 1px solid rgba(0,245,196,0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .balance-card::before {
+      content:'';
+      position:absolute;
+      top:-50%;left:-50%;
+      width:200%;height:200%;
+      background: radial-gradient(circle at 60% 40%, rgba(0,245,196,0.06) 0%, transparent 60%);
+    }
+
+    .transaction-item {
+      border-left: 3px solid;
+      transition: background 0.2s;
+    }
+    .transaction-item:hover { background: rgba(255,255,255,0.04); }
+
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      z-index: 9999;
+      animation: toastIn 0.3s ease;
+    }
+    @keyframes toastIn {
+      from { opacity:0; transform:translateX(40px); }
+      to { opacity:1; transform:translateX(0); }
+    }
+    .toast-success { background: #00b894; color: #0a0a0f; }
+    .toast-error { background: #ff4757; color: white; }
+
+    .bg-noise {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-noise">
+
+  <!-- BG orbs -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden">
+    <div style="position:absolute;top:-200px;left:-200px;width:600px;height:600px;background:radial-gradient(circle,rgba(0,128,255,0.08),transparent 70%);border-radius:50%;"></div>
+    <div style="position:absolute;bottom:-200px;right:-200px;width:500px;height:500px;background:radial-gradient(circle,rgba(0,245,196,0.06),transparent 70%);border-radius:50%;"></div>
+  </div>
+
+  <!-- AUTH SCREEN -->
+  <div id="authScreen" class="relative min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-md card-fade">
+      <!-- Logo -->
+      <div class="text-center mb-10">
+        <div class="inline-flex items-center gap-2 mb-3">
+          <div style="width:36px;height:36px;background:linear-gradient(135deg,#00f5c4,#0080ff);border-radius:10px;display:flex;align-items:center;justify-content:center;">
+            <svg width="20" height="20" fill="none" stroke="#0a0a0f" stroke-width="2.5" viewBox="0 0 24 24"><path d="M3 6l9-4 9 4v2H3V6z"/><rect x="5" y="10" width="3" height="8"/><rect x="10.5" y="10" width="3" height="8"/><rect x="16" y="10" width="3" height="8"/><path d="M3 20h18"/></svg>
+          </div>
+          <span class="text-2xl font-black tracking-tight">Nexa<span class="accent">Bank</span></span>
+        </div>
+        <p class="text-sm" style="color:rgba(255,255,255,0.4);">Next-generation digital banking</p>
+      </div>
+
+      <!-- Tabs -->
+      <div class="glass rounded-2xl p-1 flex mb-6">
+        <button onclick="switchTab('login')" id="loginTab" class="flex-1 py-2.5 rounded-xl text-sm font-700 transition-all tab-active" style="font-weight:700;">Sign In</button>
+        <button onclick="switchTab('register')" id="registerTab" class="flex-1 py-2.5 rounded-xl text-sm transition-all" style="font-weight:600;color:rgba(255,255,255,0.5);">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="loginForm" class="glass rounded-2xl p-6 space-y-4">
+        <div>
+          <label class="block text-xs font-600 mb-2" style="color:rgba(255,255,255,0.5);letter-spacing:0.08em;text-transform:uppercase;">Account Number</label>
+          <input id="loginAcc" type="text" placeholder="Enter account number" class="w-full rounded-xl px-4 py-3 mono text-sm"/>
+        </div>
+        <div>
+          <label class="block text-xs font-600 mb-2" style="color:rgba(255,255,255,0.5);letter-spacing:0.08em;text-transform:uppercase;">Password</label>
+          <input id="loginPass" type="password" placeholder="Enter password" class="w-full rounded-xl px-4 py-3 text-sm"/>
+        </div>
+        <button onclick="login()" class="btn-primary w-full py-3 rounded-xl text-sm mt-2">Sign In →</button>
+
+        <div class="text-center pt-2">
+          <p class="text-xs" style="color:rgba(255,255,255,0.3);">Demo: Register a new account first</p>
+        </div>
+      </div>
+
+      <!-- Register Form -->
+      <div id="registerForm" class="glass rounded-2xl p-6 space-y-4 hidden">
+        <div>
+          <label class="block text-xs font-600 mb-2" style="color:rgba(255,255,255,0.5);letter-spacing:0.08em;text-transform:uppercase;">Full Name</label>
+          <input id="regName" type="text" placeholder="John Doe" class="w-full rounded-xl px-4 py-3 text-sm"/>
+        </div>
+        <div>
+          <label class="block text-xs font-600 mb-2" style="color:rgba(255,255,255,0.5);letter-spacing:0.08em;text-transform:uppercase;">Account Number</label>
+          <input id="regAcc" type="text" placeholder="e.g. 1234567890" class="w-full rounded-xl px-4 py-3 mono text-sm"/>
+        </div>
+        <div>
+          <label class="block text-xs font-600 mb-2" style="color:rgba(255,255,255,0.5);letter-spacing:0.08em;text-transform:uppercase;">Initial Deposit (₹)</label>
+          <input id="regAmount" type="number" placeholder="0.00" class="w-full rounded-xl px-4 py-3 mono text-sm"/>
+        </div>
+        <div>
+          <label class="block text-xs font-600 mb-2" style="color:rgba(255,255,255,0.5);letter-spacing:0.08em;text-transform:uppercase;">Password</label>
+          <input id="regPass" type="password" placeholder="Create password" class="w-full rounded-xl px-4 py-3 text-sm"/>
+        </div>
+        <button onclick="register()" class="btn-primary w-full py-3 rounded-xl text-sm mt-2">Create Account →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD SCREEN -->
+  <div id="dashboardScreen" class="hidden relative min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="glass border-b border-white/5 px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div style="width:30px;height:30px;background:linear-gradient(135deg,#00f5c4,#0080ff);border-radius:8px;display:flex;align-items:center;justify-content:center;">
+          <svg width="16" height="16" fill="none" stroke="#0a0a0f" stroke-width="2.5" viewBox="0 0 24 24"><path d="M3 6l9-4 9 4v2H3V6z"/><rect x="5" y="10" width="3" height="8"/><rect x="10.5" y="10" width="3" height="8"/><rect x="16" y="10" width="3" height="8"/><path d="M3 20h18"/></svg>
+        </div>
+        <span class="font-black tracking-tight">Nexa<span class="accent">Bank</span></span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="text-right hidden sm:block">
+          <p id="navName" class="text-sm font-600"></p>
+          <p id="navAcc" class="mono text-xs" style="color:rgba(255,255,255,0.4);"></p>
+        </div>
+        <button onclick="logout()" class="glass px-4 py-2 rounded-xl text-xs font-600 hover:bg-white/10 transition-colors" style="color:rgba(255,100,100,0.9);">Logout</button>
+      </div>
+    </nav>
+
+    <div class="max-w-4xl mx-auto p-6 space-y-6 card-fade">
+
+      <!-- Balance Card -->
+      <div class="balance-card rounded-2xl p-6">
+        <div class="flex items-start justify-between mb-6 relative z-10">
+          <div>
+            <p class="text-xs font-600 mb-1" style="color:rgba(255,255,255,0.4);letter-spacing:0.1em;text-transform:uppercase;">Total Balance</p>
+            <p id="balanceDisplay" class="mono text-4xl font-700 accent">₹0.00</p>
+          </div>
+          <div class="glass px-3 py-1.5 rounded-lg">
+            <p class="text-xs font-600" style="color:#00f5c4;">● ACTIVE</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 relative z-10">
+          <div>
+            <p class="text-xs mb-0.5" style="color:rgba(255,255,255,0.3);">Account Holder</p>
+            <p id="cardName" class="text-sm font-700"></p>
+          </div>
+          <div style="width:1px;height:36px;background:rgba(255,255,255,0.1);"></div>
+          <div>
+            <p class="text-xs mb-0.5" style="color:rgba(255,255,255,0.3);">Account No.</p>
+            <p id="cardAcc" class="mono text-sm font-600 accent"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="grid grid-cols-3 gap-4">
+        <button onclick="openModal('credit')" class="glass rounded-2xl p-5 text-center hover:bg-white/08 transition-all group">
+          <div class="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center" style="background:rgba(46,204,113,0.15);">
+            <svg width="22" height="22" fill="none" stroke="#2ecc71" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12l7-7 7 7"/></svg>
+          </div>
+          <p class="text-sm font-700">Credit</p>
+          <p class="text-xs mt-1" style="color:rgba(255,255,255,0.3);">Add money</p>
+        </button>
+        <button onclick="openModal('debit')" class="glass rounded-2xl p-5 text-center hover:bg-white/08 transition-all group">
+          <div class="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center" style="background:rgba(255,71,87,0.15);">
+            <svg width="22" height="22" fill="none" stroke="#ff4757" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7 7 7-7"/></svg>
+          </div>
+          <p class="text-sm font-700">Debit</p>
+          <p class="text-xs mt-1" style="color:rgba(255,255,255,0.3);">Pay someone</p>
+        </button>
+        <button onclick="openModal('withdraw')" class="glass rounded-2xl p-5 text-center hover:bg-white/08 transition-all group">
+          <div class="w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center" style="background:rgba(0,128,255,0.15);">
+            <svg width="22" height="22" fill="none" stroke="#0080ff" stroke-width="2.5" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3H8L2 7h20l-6-4z"/><line x1="12" y1="12" x2="12" y2="16"/></svg>
+          </div>
+          <p class="text-sm font-700">Withdraw</p>
+          <p class="text-xs mt-1" style="color:rgba(255,255,255,0.3);">Cash out</p>
+        </button>
+      </div>
+
+      <!-- Transaction History -->
+      <div class="glass rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-5">
+          <h2 class="font-800 text-lg">Transaction History</h2>
+          <span id="txCount" class="text-xs mono glass px-3 py-1 rounded-full" style="color:rgba(255,255,255,0.4);">0 transactions</span>
+        </div>
+        <div id="transactionList">
+          <div class="text-center py-10" style="color:rgba(255,255,255,0.2);">
+            <svg class="mx-auto mb-3" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
+            <p class="text-sm">No transactions yet</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div id="modal" class="hidden fixed inset-0 flex items-center justify-center p-4" style="background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);z-index:100;">
+    <div class="glass rounded-2xl p-6 w-full max-w-sm card-fade">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <h3 id="modalTitle" class="font-800 text-lg"></h3>
+          <p id="modalSubtitle" class="text-xs mt-0.5" style="color:rgba(255,255,255,0.4);"></p>
+        </div>
+        <button onclick="closeModal()" class="glass w-8 h-8 rounded-lg flex items-center justify-center hover:bg-white/10 transition-colors" style="color:rgba(255,255,255,0.5);">✕</button>
+      </div>
+      <div class="mb-5">
+        <label class="block text-xs font-600 mb-2" style="color:rgba(255,255,255,0.5);letter-spacing:0.08em;text-transform:uppercase;">Amount (₹)</label>
+        <input id="modalAmount" type="number" placeholder="0.00" class="w-full rounded-xl px-4 py-3 mono text-lg"/>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="closeModal()" class="flex-1 py-3 rounded-xl text-sm font-600 glass hover:bg-white/08 transition-colors">Cancel</button>
+        <button id="modalConfirm" onclick="confirmTransaction()" class="flex-1 py-3 rounded-xl text-sm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./Script.js"></script>
+</body>
+</html>
