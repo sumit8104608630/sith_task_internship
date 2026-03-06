@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suchita Sharma – Resume</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #1a2340;
+    --gold: #b8975a;
+    --gold-light: #d4b47a;
+    --cream: #faf8f4;
+    --text: #2c2c2c;
+    --muted: #7a7468;
+    --sidebar-bg: #1a2340;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #e8e2d9;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  /* ── RESUME SHELL ── */
+  .resume {
+    width: 100%;
+    max-width: 960px;
+    display: grid;
+    grid-template-columns: 270px 1fr;
+    background: var(--cream);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.22), 0 8px 24px rgba(0,0,0,0.12);
+    animation: fadeUp 0.7s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ══════════════════════════════
+     SIDEBAR
+  ══════════════════════════════ */
+  .sidebar {
+    background: var(--sidebar-bg);
+    color: #e8e2d9;
+    padding: 0 0 50px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .sidebar::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(184,151,90,0.07);
+    pointer-events: none;
+  }
+
+  /* Photo */
+  .photo-wrap {
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .photo-wrap img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    filter: grayscale(15%) contrast(1.05);
+  }
+
+  .photo-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 70px;
+    background: linear-gradient(to bottom, transparent, var(--sidebar-bg));
+  }
+
+  /* Mobile photo strip */
+  .mobile-photo {
+    display: none;
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--gold);
+    flex-shrink: 0;
+  }
+
+  .mobile-photo img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    filter: grayscale(15%) contrast(1.05);
+  }
+
+  .sidebar-inner { padding: 26px 24px 0; }
+
+  .sidebar-section { margin-bottom: 30px; }
+
+  .sidebar-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .sidebar-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(184,151,90,0.35);
+  }
+
+  .contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    margin-bottom: 9px;
+    font-size: 12px;
+    color: #c8c2b8;
+    line-height: 1.55;
+    word-break: break-word;
+  }
+
+  .contact-item .icon { color: var(--gold); font-size: 12px; margin-top: 1px; flex-shrink: 0; }
+
+  .skill-item {
+    font-size: 12px;
+    color: #c8c2b8;
+    padding: 5px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .skill-item::before { content: '▸'; color: var(--gold); font-size: 9px; flex-shrink: 0; }
+
+  .edu-item { margin-bottom: 16px; }
+
+  .edu-date  { font-size: 10px; color: var(--gold); letter-spacing: 1px; font-style: italic; margin-bottom: 3px; }
+
+  .edu-school {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 13.5px; font-weight: 600;
+    color: #e8e2d9; line-height: 1.3;
+  }
+
+  .edu-degree { font-size: 11px; color: #9a9490; margin-top: 2px; }
+
+  .lang-list { font-size: 12px; color: #c8c2b8; line-height: 2; }
+
+  /* ══════════════════════════════
+     MAIN
+  ══════════════════════════════ */
+  .main {
+    padding: 48px 42px;
+    background: var(--cream);
+    min-width: 0; /* prevent grid blowout */
+  }
+
+  .name-block { margin-bottom: 30px; }
+
+  .name-block h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 5vw, 50px);
+    font-weight: 300;
+    color: var(--navy);
+    letter-spacing: -1px;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .name-block h1 span { font-weight: 700; }
+
+  .name-block .title-line {
+    font-size: clamp(10px, 1.3vw, 12px);
+    letter-spacing: 3.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 500;
+    margin-top: 8px;
+  }
+
+  .gold-rule { width: 56px; height: 2px; background: var(--gold); margin: 12px 0; }
+
+  /* Sections */
+  .section { margin-bottom: 34px; }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1; height: 1px;
+    background: linear-gradient(to right, var(--gold), transparent);
+  }
+
+  .summary-text {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.85;
+    border-left: 3px solid var(--gold);
+    padding-left: 14px;
+    font-style: italic;
+  }
+
+  /* Experience */
+  .exp-item { margin-bottom: 26px; }
+
+  .exp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 2px;
+  }
+
+  .exp-company {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px; font-weight: 700;
+    color: var(--navy); line-height: 1.2;
+  }
+
+  .exp-date {
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    font-style: italic;
+    white-space: nowrap;
+    padding-top: 3px;
+  }
+
+  .exp-role {
+    font-size: 11px;
+    color: var(--gold);
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  .exp-sub {
+    font-size: 10.5px;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 10px;
+  }
+
+  .exp-bullets { list-style: none; padding: 0; }
+
+  .exp-bullets li {
+    font-size: 12px;
+    color: #4a4640;
+    line-height: 1.72;
+    padding: 4px 0 4px 18px;
+    position: relative;
+    border-bottom: 1px dashed rgba(0,0,0,0.06);
+  }
+
+  .exp-bullets li::before {
+    content: '◆';
+    position: absolute; left: 0; top: 7px;
+    font-size: 5px;
+    color: var(--gold);
+  }
+
+  .exp-bullets li:last-child { border-bottom: none; }
+
+  /* ══════════════════════════════
+     RESPONSIVE — TABLET (≤ 768px)
+  ══════════════════════════════ */
+  @media (max-width: 768px) {
+    body { padding: 20px 12px; }
+
+    .resume {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto auto;
+    }
+
+    /* Sidebar becomes horizontal top bar */
+    .sidebar {
+      padding: 0;
+    }
+
+    /* Hide the big desktop photo */
+    .photo-wrap { display: none; }
+
+    /* Show mobile photo */
+    .mobile-photo { display: block; }
+
+    .sidebar-inner {
+      padding: 22px 22px 24px;
+    }
+
+    /* Top strip: photo + name */
+    .mobile-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(184,151,90,0.2);
+    }
+
+    .mobile-name h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px;
+      font-weight: 300;
+      color: #e8e2d9;
+      line-height: 1.1;
+    }
+
+    .mobile-name h2 span { font-weight: 700; }
+
+    .mobile-name p {
+      font-size: 9px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-top: 5px;
+    }
+
+    /* Sidebar grid layout */
+    .sidebar-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0 28px;
+    }
+
+    .sidebar-grid .sidebar-section:last-child {
+      grid-column: 1 / -1;
+    }
+
+    /* Main section */
+    .main { padding: 28px 22px 36px; }
+
+    /* Hide desktop name block on mobile */
+    .name-block { display: none; }
+
+    .section { margin-bottom: 26px; }
+
+    .exp-company { font-size: 16px; }
+    .summary-text { font-size: 12px; }
+  }
+
+  /* ══════════════════════════════
+     RESPONSIVE — MOBILE (≤ 480px)
+  ══════════════════════════════ */
+  @media (max-width: 480px) {
+    body { padding: 12px 8px; }
+
+    .sidebar-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .sidebar-grid .sidebar-section:last-child {
+      grid-column: 1;
+    }
+
+    .mobile-header { flex-direction: column; align-items: flex-start; }
+
+    .mobile-photo { width: 72px; height: 72px; }
+
+    .skill-item { font-size: 11px; }
+    .contact-item { font-size: 11px; }
+    .exp-bullets li { font-size: 11.5px; }
+    .exp-company { font-size: 15px; }
+    .main { padding: 22px 16px 30px; }
+  }
+
+  /* ══════════════════════════════
+     PRINT
+  ══════════════════════════════ */
+  @media print {
+    body { background: white; padding: 0; }
+    .resume {
+      box-shadow: none;
+      grid-template-columns: 240px 1fr;
+    }
+    .photo-wrap { display: block !important; }
+    .mobile-photo { display: none !important; }
+    .mobile-header { display: none !important; }
+    .name-block { display: block !important; }
+  }
+</style>
+</head>
+<body>
+<div class="resume">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <!-- Desktop photo (hidden on mobile) -->
+    <div class="photo-wrap">
+      <img src="./WhatsApp Image 2026-02-20 at 20.35.36 (1).jpeg" alt="Suchita Sharma">
+    </div>
+
+    <div class="sidebar-inner">
+
+      <!-- Mobile-only header (photo + name) -->
+      <div class="mobile-header">
+        <div class="mobile-photo">
+          <img src="./WhatsApp Image 2026-02-20 at 20.35.36 (1).jpeg" alt="Suchita Sharma">
+        </div>
+        <div class="mobile-name">
+          <h2>Suchita <span>Sharma</span></h2>
+          <p>Administrative Executive · Mumbai</p>
+        </div>
+      </div>
+
+      <div class="sidebar-grid">
+
+        <!-- CONTACT -->
+        <div class="sidebar-section">
+          <div class="sidebar-label">Contact</div>
+          <div class="contact-item"><span class="icon">📞</span>+91 93241 42366</div>
+          <div class="contact-item"><span class="icon">✉️</span>ss9324142466@gmail.com</div>
+          <div class="contact-item"><span class="icon">📍</span>Mumbai, India – 400086</div>
+        </div>
+
+        <!-- SKILLS -->
+        <div class="sidebar-section">
+          <div class="sidebar-label">Skills</div>
+          <div class="skill-item">Petty Cash Management</div>
+          <div class="skill-item">Invoice Verification</div>
+          <div class="skill-item">Budgeting</div>
+          <div class="skill-item">Financial Reporting</div>
+          <div class="skill-item">Record Keeping</div>
+          <div class="skill-item">Microsoft Excel</div>
+          <div class="skill-item">Customer Support</div>
+          <div class="skill-item">Problem Solving</div>
+          <div class="skill-item">Team Collaboration</div>
+          <div class="skill-item">Confidentiality Maintenance</div>
+          <div class="skill-item">Communication Skills</div>
+          <div class="skill-item">Team Leadership &amp; Motivation</div>
+        </div>
+
+        <!-- EDUCATION -->
+        <div class="sidebar-section">
+          <div class="sidebar-label">Education</div>
+          <div class="edu-item">
+            <div class="edu-date">01/2022 – 01/2024</div>
+            <div class="edu-school">Amigo Academy, Mumbai</div>
+            <div class="edu-degree">Diploma in Aviation</div>
+          </div>
+          <div class="edu-item">
+            <div class="edu-date">01/2020 – 02/2023</div>
+            <div class="edu-school">Capital University, Mumbai</div>
+            <div class="edu-degree">BCom – Accounting</div>
+          </div>
+        </div>
+
+        <!-- LANGUAGES -->
+        <div class="sidebar-section">
+          <div class="sidebar-label">Languages</div>
+          <div class="lang-list">English &nbsp;·&nbsp; Hindi &nbsp;·&nbsp; Marathi</div>
+        </div>
+
+      </div><!-- /sidebar-grid -->
+    </div><!-- /sidebar-inner -->
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- Desktop name block (hidden on mobile) -->
+    <div class="name-block">
+      <h1>Suchita <span>Sharma</span></h1>
+      <div class="gold-rule"></div>
+      <div class="title-line">Administrative Executive &nbsp;·&nbsp; Mumbai</div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="section">
+      <div class="section-title">Profile</div>
+      <p class="summary-text">
+        Detail-oriented and highly organised Administrative Professional with experience in office operations, documentation management, and financial record keeping. Skilled in MS Office (Excel, Word, Outlook), data entry, petty cash handling, and maintaining confidential records. Strong ability to coordinate between departments, manage time efficiently, and support daily operational activities. Known for accuracy, professionalism, and effective communication.
+      </p>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <div class="section">
+      <div class="section-title">Experience</div>
+
+      <!-- Oman Air -->
+      <div class="exp-item">
+        <div class="exp-header">
+          <div class="exp-company">Oman Air</div>
+          <div class="exp-date">07/2023 – 01/2026</div>
+        </div>
+        <div class="exp-role">Admin Executive &nbsp;·&nbsp; Mumbai, India</div>
+        <div class="exp-sub">Third-party payroll: Bird Worldwide Flight Services</div>
+        <ul class="exp-bullets">
+          <li>Handled daily office operations including paperwork, filing, and data entry to ensure smooth workflow.</li>
+          <li>Managed petty cash expenses, maintained accurate records, and ensured correct daily cash counts.</li>
+          <li>Verified daily invoices and calculated vendor payments to ensure timely disbursements.</li>
+          <li>Prepared and monitored departmental budgets; tracked spending against targets and flagged variances to management.</li>
+          <li>Created weekly and monthly expenditure reports for senior managers.</li>
+          <li>Ensured compliance with financial policies and liaised with the finance team for approvals and refunds.</li>
+          <li>Procured office supplies and stationery through cost-effective vendor negotiations.</li>
+          <li>Tracked attendance and disbursed salaries to housekeeping staff in a timely manner.</li>
+          <li>Managed and secured daily flight records maintaining complete confidentiality.</li>
+          <li>Coordinated meeting schedules and resolved day-to-day operational issues.</li>
+        </ul>
+      </div>
+
+      <!-- Jio World -->
+      <div class="exp-item">
+        <div class="exp-header">
+          <div class="exp-company">Jio World</div>
+          <div class="exp-date">03/2020 – 01/2023</div>
+        </div>
+        <div class="exp-role">Guest Relations Executive &nbsp;·&nbsp; Mumbai, India</div>
+        <ul class="exp-bullets">
+          <li>Assisted guests at the drive-in cinema by verifying tickets and directing 200+ vehicles to designated parking zones per show.</li>
+          <li>Resolved customer queries promptly and professionally to maintain high satisfaction levels.</li>
+          <li>Managed crowd and traffic flow during peak weekends ensuring safe and efficient vehicle movement.</li>
+          <li>Collaborated with security and technical teams to ensure uninterrupted screenings.</li>
+          <li>Enforced safety protocols across the open-air venue to ensure guest safety at all times.</li>
+          <li>Trained new staff on the ticketing system and guest-interaction standards.</li>
+          <li>Collected and relayed guest feedback to management to support continuous service improvement.</li>
+        </ul>
+      </div>
+
+    </div>
+  </main>
+
+</div>
+</body>
+</html>
